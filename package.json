@@ -9,13 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tanstack/react-query": "^4.29.19",
     "autoprefixer": "10.4.14",
+    "axios": "^1.4.0",
     "eslint": "8.44.0",
     "eslint-config-next": "13.4.9",
+    "json-server": "^0.17.3",
     "next": "13.4.9",
     "postcss": "8.4.25",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tailwindcss": "3.3.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.3",
+    "@tanstack/eslint-plugin-query": "^4.29.9",
+    "prettier": "^3.0.0"
   }
 }
