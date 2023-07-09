@@ -1,4 +1,5 @@
 # React Query Tutorial
+
 ## Introduction to React Query
 
 - Data fetching: React Query provides a simple and flexible API for fetching data. It supports different types of data sources, such as REST APIs, GraphQL API, and more. It also supports different types of queries, such as queries with pagination and queries with filters.
@@ -14,9 +15,93 @@
 - `useQueryClient`: This hook is used for accessing the query client instance. It returns an instance of the QueryClient class, which can be used to manage queries manually, invalidate queries, and more
 
 ## Fetching and Validation
+
 - `useQuery`
 - `useQueryClient`
 
 ## Mutation/Updating
 
 - `useMutation`
+
+## Installation
+
+[React Query Documentation](https://tanstack.com/query/latest/docs/react/overview)
+
+```bash
+$ npm i @tanstack/react-query
+# or
+$ pnpm add @tanstack/react-query
+# or
+$ yarn add @tanstack/react-query
+```
+
+[Quick Start](https://tanstack.com/query/v4/docs/react/quick-start)
+
+### Setup in Nextjs
+
+- /pages/_app.js
+
+```javascript
+import "@/styles/globals.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
+
+export default function App({ Component, pageProps }) {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Component {...pageProps} />
+    </QueryClientProvider>
+  );
+}
+```
+
+## Data Fetching
+
+You have to use `useQuery` hook to fetching data. [useQuery docs](https://tanstack.com/query/v4/docs/react/reference/useQuery)
+
+```javascript
+import React from "react";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+
+const Home = () => {
+  const getAllTodos = async () => {
+    try {
+      const res = await axios.get(
+        "https://jsonplaceholder.typicode.com/todoss",
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(new Error(error));
+    }
+  };
+
+  const {
+    data: todos,
+    isSuccess,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["get", "todos"],
+    queryFn: getAllTodos,
+  });
+
+  return (
+    <div>
+      {isLoading && "Loading..."}
+      {isError && "Something wrong"}
+      {isSuccess &&
+        todos.map((todo) => {
+          return (
+            <li key={todo.id}>
+              {todo.id} - {todo.title}
+            </li>
+          );
+        })}
+    </div>
+  );
+};
+
+export default Home;
+```
