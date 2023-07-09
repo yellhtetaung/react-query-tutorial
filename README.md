@@ -396,7 +396,7 @@ const queryClient = new QueryClient({
 
 ##  Devtools
 
-[react query dev tools docs](https://tanstack.com/query/v4/docs/react/devtools)
+[react query dev tools Docs](https://tanstack.com/query/v4/docs/react/devtools)
 
 ```bash
 $ npm i @tanstack/react-query-devtools
