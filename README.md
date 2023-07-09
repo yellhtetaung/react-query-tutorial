@@ -14,12 +14,12 @@
 - `useMutation`: This hook is used for mutating data. It takes a mutation function as an argument, and returns a mutate function and the status of the mutation. This hook also provides optimistic update by default.
 - `useQueryClient`: This hook is used for accessing the query client instance. It returns an instance of the QueryClient class, which can be used to manage queries manually, invalidate queries, and more
 
-## Fetching and Validation
+### Fetching and Validation
 
 - `useQuery`
 - `useQueryClient`
 
-## Mutation/Updating
+### Mutation/Updating
 
 - `useMutation`
 
@@ -35,9 +35,9 @@ $ pnpm add @tanstack/react-query
 $ yarn add @tanstack/react-query
 ```
 
-[Quick Start](https://tanstack.com/query/v4/docs/react/quick-start)
+### Setup in Nextjs 
 
-### Setup in Nextjs
+[Quick Start](https://tanstack.com/query/v4/docs/react/quick-start)
 
 - /pages/_app.js
 
@@ -59,6 +59,8 @@ export default function App({ Component, pageProps }) {
 ## Data Fetching
 
 You have to use `useQuery` hook to fetching data. [useQuery docs](https://tanstack.com/query/v4/docs/react/reference/useQuery)
+
+- /pages/index.js
 
 ```javascript
 import React from "react";
@@ -104,4 +106,272 @@ const Home = () => {
 };
 
 export default Home;
+```
+
+## Create JSON-SERVER
+
+[json-server docs](https://www.npmjs.com/package/json-server)
+
+```bash
+$ npm i json-server
+# or
+$ pnpm add json-server
+# or
+$ yarn add json-server
+```
+
+- create json file `db.json` in project folder
+
+```json
+{
+  "todos": [
+    {
+      "id": 1,
+      "taskName": "To eat",
+      "isFinished": false
+    },
+    {
+      "id": 2,
+      "taskName": "To coding",
+      "isFinished": false
+    },
+    {
+      "id": 3,
+      "taskName": "To sleep",
+      "isFinished": false
+    },
+    {
+      "id": 4,
+      "taskName": "To learn",
+      "isFinished": false
+    }
+  ]
+}
+
+```
+
+- run json-server
+```bash
+$ npm json-server --watch db.json --port 4000
+# or
+$ pnpm json-server --watch db.json --port 4000
+# or
+$ yarn json-server --watch db.json --port 4000
+```
+
+## Mutation/Updating
+
+You have to use `useMutation` hook to mutating data. [useMutation docs](https://tanstack.com/query/v4/docs/react/reference/useMutation)
+
+```javascript
+import React from "react";
+import axios from "axios";
+import { useMutation, useQuery } from "@tanstack/react-query";
+
+const Home = () => {
+  const getAllTodos = async () => {
+    try {
+      const res = await axios.get("http://localhost:4000/todos");
+      return res.data;
+    } catch (error) {
+      return Promise.reject(new Error(error));
+    }
+  };
+
+  const {
+    data: todos,
+    isSuccess,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["get", "todos"],
+    queryFn: getAllTodos,
+  });
+
+  const createNewTodo = async () => {
+    const res = await axios.post("http://localhost:4000/todos", {
+      taskName: "test",
+      isFinished: false,
+    });
+    return res.data;
+  };
+
+  const { mutate } = useMutation({
+    mutationKey: ["get", "todos"],
+    mutationFn: createNewTodo,
+  });
+
+  const onCreateNewTodo = () => {
+    mutate();
+  };
+
+  return (
+    <div>
+      {isLoading && "Loading..."}
+      {isError && "Something wrong"}
+      {isSuccess &&
+        todos.map((todo) => {
+          return (
+            <li key={todo.id}>
+              {todo.id} - {todo.taskName}
+            </li>
+          );
+        })}
+      <button onClick={onCreateNewTodo}>Create new todo</button>
+    </div>
+  );
+};
+
+export default Home;
+
+```
+
+## Invalidate
+
+You have to use `useQueryClient` hook to invalidate data. [useQueryClient docs](https://tanstack.com/query/v4/docs/react/reference/useQueryClient)
+
+- Data တွေ refetching လုပ်ဖို့အတွက် invalidation query ကိုသုံးဖို့လိုအပ်ပါတယ်။ create လုပ်လို့ success ဖြစ်သွားတာနဲ့ တစ်ပြိုင်နက်ထဲမှာ data တွေကို refetching လုပ်ပါတယ်။ ဘယ် data ကို refetching လုပ်မယ်ဆိုတာကိုလည်း queryKey နဲ့ သတ်မှတ်ပေးရပါတယ်။
+
+```javascript
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+const queryClient = useQueryClient();
+
+const onCreateNewTodo = () => {
+    mutate(
+      {},
+      {
+        onSuccess: async () => {
+         await queryClient.invalidateQueries({
+            queryKey: ["get", "todos"],
+          });
+        },
+      },
+    );
+  };
+```
+
+### Using Real Data
+
+```javascript
+import React, { useState } from "react";
+import axios from "axios";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+const Home = () => {
+  const queryClient = useQueryClient();
+  const [taskValue, setTaskValue] = useState("");
+
+  const getAllTodos = async () => {
+    try {
+      const res = await axios.get("http://localhost:4000/todos");
+      return res.data;
+    } catch (error) {
+      return Promise.reject(new Error(error));
+    }
+  };
+
+  const {
+    data: todos,
+    isSuccess,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["get", "todos"],
+    queryFn: getAllTodos,
+  });
+
+  const createNewTodo = async ({ taskName, isFinished }) => {
+    const res = await axios.post("http://localhost:4000/todos", {
+      taskName,
+      isFinished,
+    });
+    setTaskValue("");
+    return res.data;
+  };
+
+  const { mutate } = useMutation({
+    mutationKey: ["get", "todos"],
+    mutationFn: createNewTodo,
+  });
+
+  const onCreateNewTodo = () => {
+    mutate(
+      {
+        taskName: taskValue,
+        isFinished: false,
+      },
+      {
+        onSuccess: async () => {
+          await queryClient.invalidateQueries({
+            queryKey: ["get", "todos"],
+          });
+        },
+      },
+    );
+  };
+
+  return (
+    <div className="mx-14 mt-16">
+      <input
+        value={taskValue}
+        onChange={(e) => setTaskValue(e.target.value)}
+        type="text"
+        className="mb-6"
+      />
+      <button
+        onClick={onCreateNewTodo}
+        className="bg-red-500 text-white px-2 py-2"
+      >
+        Add New Todo
+      </button>
+
+      {isLoading && "Loading..."}
+      {isError && "Something wrong"}
+      {isSuccess &&
+        todos.map((todo) => {
+          return (
+            <li key={todo.id}>
+              {todo.id} - {todo.taskName}
+            </li>
+          );
+        })}
+    </div>
+  );
+};
+
+export default Home;
+
+```
+
+- Set argument in mutate
+```javascript
+const onCreateNewTodo = () => {
+    mutate(
+      {
+        taskName: taskValue,
+        isFinished: false,
+      },
+      {
+        onSuccess: async () => {
+          await queryClient.invalidateQueries({
+            queryKey: ["get", "todos"],
+          });
+        },
+      },
+    );
+  };
+```
+
+- mutate မှာ argument တွေ ထည့်လိုက်တာနဲ့ value တွေကို parameter အနေနဲ့ function ထဲကို pass လုပ်ပေးပါတယ်။
+
+```javascript
+const createNewTodo = async ({ taskName, isFinished }) => {
+    const res = await axios.post("http://localhost:4000/todos", {
+      taskName,
+      isFinished,
+    });
+    setTaskValue("");
+    return res.data;
+  };
 ```

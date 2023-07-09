@@ -36,9 +36,19 @@
       "id": 7
     },
     {
-      "taskName": "new task",
+      "taskName": "test",
       "isFinished": false,
       "id": 8
+    },
+    {
+      "taskName": "have to cook",
+      "isFinished": false,
+      "id": 9
+    },
+    {
+      "taskName": "have to eat",
+      "isFinished": false,
+      "id": 10
     }
   ]
 }
