@@ -405,3 +405,70 @@ $ pnpm add @tanstack/react-query-devtools
 # or
 $ yarn add @tanstack/react-query-devtools
 ```
+
+## Dependent Queries
+
+[Dependent Queries Docs](https://tanstack.com/query/latest/docs/react/guides/dependent-queries)
+
+- /page/[id].js
+
+```javascript
+import React from "react";
+import { useRouter } from "next/router";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+
+const TodoById = () => {
+  const router = useRouter();
+  const { id } = router.query;
+
+  const getTodoById = async (id) => {
+    try {
+      const res = await axios.get(`http://localhost:4000/todos/${id}`);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(new Error(error));
+    }
+  };
+
+  const {
+    data: todo,
+    isLoading,
+    isSuccess,
+    isError,
+  } = useQuery({
+    queryKey: ["get", "todos", id],
+    queryFn: () => getTodoById(id),
+    enabled: !!id,
+  });
+
+  return (
+    <div>
+      {isLoading && "Loading..."}
+      {isError && "Something wrong"}
+      {isSuccess && (
+        <div>
+          {todo.id} - {todo.taskName}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default TodoById;
+```
+
+- Query Key must be unique. 
+```javascript
+    queryKey: ["get", "todos", id]
+```
+
+- Pass Value to function
+```javascript
+    queryFn: () => getTodoById(id)
+```
+
+- Dependent Queries
+```javascript
+    enabled: !!id
+```

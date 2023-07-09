@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
 
 const Home = () => {
   const queryClient = useQueryClient();
@@ -80,7 +81,9 @@ const Home = () => {
         todos.map((todo) => {
           return (
             <li key={todo.id}>
-              {todo.id} - {todo.taskName}
+              <Link href={`/${todo.id}`}>
+                {todo.id} - {todo.taskName}
+              </Link>
             </li>
           );
         })}

@@ -1,59 +1,19 @@
 {
   "todos": [
     {
-      "id": 1,
-      "taskName": "To eat",
-      "isFinished": false
-    },
-    {
-      "id": 2,
-      "taskName": "To coding",
-      "isFinished": false
-    },
-    {
-      "id": 3,
-      "taskName": "To sleep",
-      "isFinished": false
-    },
-    {
-      "id": 4,
-      "taskName": "To learn",
-      "isFinished": false
-    },
-    {
-      "taskName": "test",
+      "taskName": "have to read",
       "isFinished": false,
-      "id": 5
-    },
-    {
-      "taskName": "test",
-      "isFinished": false,
-      "id": 6
-    },
-    {
-      "taskName": "test",
-      "isFinished": false,
-      "id": 7
-    },
-    {
-      "taskName": "test",
-      "isFinished": false,
-      "id": 8
-    },
-    {
-      "taskName": "have to cook",
-      "isFinished": false,
-      "id": 9
+      "id": 1
     },
     {
       "taskName": "have to eat",
       "isFinished": false,
-      "id": 10
+      "id": 2
     },
     {
-      "taskName": "have to go",
+      "taskName": "have to coding",
       "isFinished": false,
-      "id": 11
+      "id": 3
     }
   ]
 }
