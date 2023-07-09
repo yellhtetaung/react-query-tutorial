@@ -375,3 +375,33 @@ const createNewTodo = async ({ taskName, isFinished }) => {
     return res.data;
   };
 ```
+
+## Window focus Refetching
+
+[window focus refetching Docs](https://tanstack.com/query/latest/docs/react/guides/window-focus-refetching)
+
+- refetchOnWindowFocus (default - true)
+- staleTime (data fetch လုပ်နေတဲ့ result က အသစ် အနေနဲ့ မရောက်တဲ့ ကာလ)
+
+```javascript
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false, // default true
+      staleTime: 1000 * 60 * 60 * 24, // 1 day
+    },
+  },
+});
+```
+
+##  Devtools
+
+[react query dev tools docs](https://tanstack.com/query/v4/docs/react/devtools)
+
+```bash
+$ npm i @tanstack/react-query-devtools
+# or
+$ pnpm add @tanstack/react-query-devtools
+# or
+$ yarn add @tanstack/react-query-devtools
+```
